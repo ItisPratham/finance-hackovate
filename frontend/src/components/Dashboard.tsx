@@ -181,7 +181,7 @@ export function Dashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Asset Breakdown</CardTitle>
+            <CardTitle>Category Breakdown</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {data.categoryBreakdown
@@ -196,26 +196,11 @@ export function Dashboard() {
         ))
       : <p className="text-gray-300">No category data</p>
     }
-            {/* <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>Cash & Savings</span>
-                <span className={emptyData.cash ? 'text-foreground' : 'text-gray-300'}>
-                  {formatCurrency(emptyData.cash)}
-                </span>
-              </div>
-              <Progress value={0} className="h-2" />
-            </div>
-            <div className="space-y-2">
-              <div className="flex justify-between">
-                <span>Real Estate</span>
-                <span className="text-gray-300">---</span>
-              </div>
-              <Progress value={0} className="h-2" />
-            </div> */}
+          
           </CardContent>
         </Card>
 
-        <Card>
+        {/* <Card>
           <CardHeader>
             <CardTitle>Debt Overview</CardTitle>
           </CardHeader>
@@ -242,7 +227,7 @@ export function Dashboard() {
               <Progress value={0} className="h-2" />
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
       </div>
     </div>
   );

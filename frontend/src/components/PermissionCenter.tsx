@@ -2,63 +2,47 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Switch } from "./ui/switch";
 import { Badge } from "./ui/badge";
 import { Label } from "./ui/label";
-import { Shield, Eye, EyeOff, Lock, Unlock } from "lucide-react";
-import { useState } from "react";
+import { Shield, Eye, EyeOff, Lock } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const permissionCategories = [
-  {
-    id: 'assets',
-    name: 'Assets & Investments',
-    description: 'Bank accounts, investments, mutual funds, stocks',
-    icon: '💰',
-    sensitive: false
-  },
-  {
-    id: 'liabilities',
-    name: 'Loans & Liabilities',
-    description: 'Credit cards, home loans, personal loans',
-    icon: '💳',
-    sensitive: true
-  },
-  {
-    id: 'transactions',
-    name: 'Transaction History',
-    description: 'Spending patterns, income sources, transaction details',
-    icon: '📊',
-    sensitive: true
-  },
-  {
-    id: 'epf',
-    name: 'EPF & Retirement',
-    description: 'Employee Provident Fund, retirement accounts',
-    icon: '🏛️',
-    sensitive: false
-  },
-  {
-    id: 'credit_score',
-    name: 'Credit Score & History',
-    description: 'Credit bureau reports, credit utilization',
-    icon: '📈',
-    sensitive: true
-  },
-  {
-    id: 'insurance',
-    name: 'Insurance Policies',
-    description: 'Life, health, vehicle insurance details',
-    icon: '🛡️',
-    sensitive: false
-  }
+  { id: 'assets', name: 'Assets & Investments', description: 'Bank accounts, investments, mutual funds, stocks', icon: '💰', sensitive: false },
+  { id: 'liabilities', name: 'Loans & Liabilities', description: 'Credit cards, home loans, personal loans', icon: '💳', sensitive: true },
+  { id: 'transactions', name: 'Transaction History', description: 'Spending patterns, income sources, transaction details', icon: '📊', sensitive: true },
+  { id: 'epf', name: 'EPF & Retirement', description: 'Employee Provident Fund, retirement accounts', icon: '🏛️', sensitive: false },
+  { id: 'credit_score', name: 'Credit Score & History', description: 'Credit bureau reports, credit utilization', icon: '📈', sensitive: true },
+  { id: 'insurance', name: 'Insurance Policies', description: 'Life, health, vehicle insurance details', icon: '🛡️', sensitive: false }
 ];
 
+const defaultPermissions: Record<string, boolean> = {
+  assets: true,
+  liabilities: true,
+  transactions: false,
+  epf: true,
+  credit_score: false,
+  insurance: true
+};
+
 export function PermissionCenter() {
-  const [permissions, setPermissions] = useState<Record<string, boolean>>({
-    assets: true,
-    liabilities: true,
-    transactions: false,
-    epf: true,
-    credit_score: false,
-    insurance: true
-  });
+  const [permissions, setPermissions] = useState<Record<string, boolean>>(defaultPermissions);
+
+  // Load from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem("permissions");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (parsed && typeof parsed === "object") {
+          setPermissions(parsed);
+        }
+      } catch (_) {}
+    }
+  }, []);
+
+  // Save to localStorage on change
+  useEffect(() => {
+    localStorage.setItem("permissions", JSON.stringify(permissions));
+  }, [permissions]);
 
   const togglePermission = (categoryId: string) => {
     setPermissions(prev => ({
@@ -77,7 +61,6 @@ export function PermissionCenter() {
         <p className="text-muted-foreground">Control what financial data you want to share for AI insights</p>
       </div>
 
-      {/* Summary Card */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -135,22 +118,6 @@ export function PermissionCenter() {
           </Card>
         ))}
       </div>
-
-      {/* Privacy Notice */}
-      <Card className="border-blue-200 bg-blue-50">
-        <CardContent className="p-4">
-          <div className="flex items-start space-x-3">
-            <Shield className="h-5 w-5 text-blue-600 mt-0.5" />
-            <div>
-              <p className="text-blue-900">Your data is secure</p>
-              <p className="text-blue-700 text-sm">
-                All financial data is encrypted and processed locally. 
-                You can change these permissions anytime to control what insights you receive.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   );
 }

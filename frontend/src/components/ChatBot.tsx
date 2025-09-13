@@ -5,6 +5,7 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { Send, Bot, User, TrendingUp, AlertCircle, Lightbulb } from "lucide-react";
 import { useState } from "react";
+import axios from 'axios';
 
 interface Message {
   id: string;
@@ -66,35 +67,92 @@ export function ChatBot() {
     }
   };
 
-  const sendMessage = async () => {
-    if (!input.trim()) return;
+  // const sendMessage = async () => {
+  //   if (!input.trim()) return;
 
-    const userMessage: Message = {
-      id: Date.now().toString(),
-      content: input,
-      sender: 'user',
-      timestamp: new Date()
+  //   const userMessage: Message = {
+  //     id: Date.now().toString(),
+  //     content: input,
+  //     sender: 'user',
+  //     timestamp: new Date()
+  //   };
+
+  //   setMessages(prev => [...prev, userMessage]);
+  //   setInput('');
+  //   setIsTyping(true);
+
+  //   // Simulate AI thinking time
+  //   setTimeout(() => {
+  //     const aiResponse = getAIResponse(input);
+  //     const aiMessage: Message = {
+  //       id: (Date.now() + 1).toString(),
+  //       content: aiResponse.content,
+  //       sender: 'ai',
+  //       timestamp: new Date(),
+  //       suggestions: aiResponse.suggestions
+  //     };
+
+  //     setMessages(prev => [...prev, aiMessage]);
+  //     setIsTyping(false);
+  //   }, 1500);
+  // };
+
+
+  const sendMessage = async () => {
+  if (!input.trim()) return;
+
+  const userMessage: Message = {
+    id: Date.now().toString(),
+    content: input,
+    sender: 'user',
+    timestamp: new Date()
+  };
+
+  setMessages(prev => [...prev, userMessage]);
+  setInput('');
+  setIsTyping(true);
+
+  try {
+    const defaultPermissions: Record<string, boolean> = {
+      assets: true,
+      liabilities: true,
+      transactions: false,
+      epf: true,
+      credit_score: false,
+      insurance: true
+    };
+    let permissions = JSON.parse(localStorage.getItem('permissions') || 'null');
+
+if (!permissions || typeof permissions !== 'object') {
+  localStorage.setItem('permissions', JSON.stringify(defaultPermissions));
+  permissions = defaultPermissions;
+}
+    const response = await axios.post('http://127.0.0.1:5000/query', {
+      query: input,
+      permissions
+    });
+
+    const aiMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      content: response.data?.response || 'No response from server.',
+      sender: 'ai',
+      timestamp: new Date(),
+      suggestions: response.data?.suggestions || []
     };
 
-    setMessages(prev => [...prev, userMessage]);
-    setInput('');
-    setIsTyping(true);
-
-    // Simulate AI thinking time
-    setTimeout(() => {
-      const aiResponse = getAIResponse(input);
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: aiResponse.content,
-        sender: 'ai',
-        timestamp: new Date(),
-        suggestions: aiResponse.suggestions
-      };
-
-      setMessages(prev => [...prev, aiMessage]);
-      setIsTyping(false);
-    }, 1500);
-  };
+    setMessages(prev => [...prev, aiMessage]);
+  } catch (error) {
+    const aiMessage: Message = {
+      id: (Date.now() + 1).toString(),
+      content: 'Error communicating with the server.',
+      sender: 'ai',
+      timestamp: new Date()
+    };
+    setMessages(prev => [...prev, aiMessage]);
+  } finally {
+    setIsTyping(false);
+  }
+};
 
   const handleSuggestionClick = (suggestion: string) => {
     setInput(suggestion);
