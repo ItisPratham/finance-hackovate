@@ -1,34 +1,20 @@
 {
-  "current_score": 750,
-  "score_range": "Good",
+  "current_balance": 45000.00,
+  "employee_contribution": 1800.00,
+  "employer_contribution": 1800.00,
+  "total_monthly_contribution": 3600.00,
   "last_updated": "2024-01-15",
-  "factors": {
-    "payment_history": "Excellent",
-    "credit_utilization": "Good",
-    "length_of_credit_history": "Fair",
-    "new_credit": "Good",
-    "credit_mix": "Good"
+  "account_details": {
+    "account_number": "EPF12345678",
+    "date_of_joining": "2020-01-15",
+    "years_of_service": 4
   },
-  "history": [
-    {
-      "date": "2024-01-15",
-      "score": 750,
-      "change": 5
-    },
-    {
-      "date": "2023-12-15",
-      "score": 745,
-      "change": -2
-    },
-    {
-      "date": "2023-11-15",
-      "score": 747,
-      "change": 3
+  "annual_statement": {
+    "2023": {
+      "opening_balance": 38000.00,
+      "total_contributions": 43200.00,
+      "interest_earned": 3040.00,
+      "closing_balance": 45000.00
     }
-  ],
-  "recommendations": [
-    "Keep credit utilization below 30%",
-    "Continue making payments on time",
-    "Consider diversifying credit mix"
-  ]
+  }
 }

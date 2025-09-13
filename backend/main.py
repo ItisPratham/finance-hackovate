@@ -1,3 +1,5 @@
+# backend/main.py
+
 from flask import Flask, request, jsonify, session
 from flask_cors import CORS
 from flask_restx import Api, Namespace, Resource, fields, reqparse
@@ -44,7 +46,6 @@ api = Api(app, version='1.0', title='AI Finance Assistant API',
 # Configure Gemini AI
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 model = None
-
 if GEMINI_API_KEY:
     genai.configure(api_key=GEMINI_API_KEY)
     try:
@@ -315,7 +316,7 @@ def analyze_spending_trends(transactions):
             recent_avg = sum(amounts[-3:]) / min(3, len(amounts))
             
             trend = "increasing" if recent_avg > avg_amount * 1.1 else \
-                   "decreasing" if recent_avg < avg_amount * 0.9 else "stable"
+                    "decreasing" if recent_avg < avg_amount * 0.9 else "stable"
             
             analysis[category] = {
                 "total_spent": sum(amounts),
@@ -520,7 +521,11 @@ query_model = query_ns.model('Query', {
 financial_summary_model = data_ns.model('FinancialSummary', {
     'net_worth': fields.Raw(description='Net worth summary'),
     'spending': fields.Raw(description='Spending summary'),
-    'investments': fields.Raw(description='Investment portfolio summary')
+    'investments': fields.Raw(description='Investment portfolio summary'),
+    'monthlyIncome': fields.Float(description='Total income in last month'),
+    'monthlyExpenses': fields.Float(description='Total expenses in last month'),
+    'savingsRate': fields.Float(description='Savings rate percentage'),
+    'creditScore': fields.Integer(description='Current credit score')
 })
 
 permissions_parser = reqparse.RequestParser()
@@ -602,6 +607,36 @@ class FinancialSummary(Resource):
         
         if investments and 'portfolio' in investments:
             summary['investments'] = investments['portfolio']
+        
+        # --- NEW: Frontend Metrics ---
+        # Get transactions for the past month
+        all_txns = transactions_data.get('transactions', []) if transactions_data else []
+        one_month_ago = datetime.now() - timedelta(days=30)
+        recent_txns = []
+        for txn in all_txns:
+            try:
+                txn_date = datetime.strptime(txn['date'], '%Y-%m-%d')
+                if txn_date >= one_month_ago:
+                    recent_txns.append(txn)
+            except ValueError:
+                continue
+        
+        # Calculate monthly metrics
+        monthly_income = sum(t['amount'] for t in recent_txns if t['amount'] > 0)
+        monthly_expenses = sum(abs(t['amount']) for t in recent_txns if t['amount'] < 0)
+        savings_rate = ((monthly_income - monthly_expenses) / monthly_income * 100) if monthly_income > 0 else 0.0
+        
+        # Get credit score
+        credit_data = filter_data_by_permissions('credit_score')
+        credit_score = credit_data.get('current_score') if credit_data else None
+        
+        # Add frontend metrics to summary
+        summary.update({
+            'monthlyIncome': monthly_income,
+            'monthlyExpenses': monthly_expenses,
+            'savingsRate': round(savings_rate, 1),
+            'creditScore': credit_score
+        })
         
         return summary
 
@@ -838,13 +873,13 @@ class HealthCheck(Resource):
 def generate_ai_prompt(user_query, context_data, conversation_history):
     conversation_context = ""
     if conversation_history:
-        conversation_context = "\n\nPrevious conversation:\n"
+        conversation_context = "\\n\\nPrevious conversation:\\n"
         for conv in conversation_history[-3:]:  # last 3
-            conversation_context += f"User: {conv['user_query']}\nAssistant: {conv['ai_response']}\n\n"
+            conversation_context += f"User: {conv['user_query']}\\nAssistant: {conv['ai_response']}\\n\\n"
 
     financial_summary = ""
     if context_data:
-        financial_summary = "\n\nFinancial Data Summary:\n"
+        financial_summary = "\\n\\nFinancial Data Summary:\\n"
         
         if 'assets' in context_data and context_data['assets']:
             assets = context_data['assets']
@@ -858,7 +893,7 @@ def generate_ai_prompt(user_query, context_data, conversation_history):
                             total_assets += acc['value']
                         elif 'estimated_value' in acc:
                             total_assets += acc['estimated_value']
-            financial_summary += f"Total Assets: ${total_assets:,.2f}\n"
+            financial_summary += f"Total Assets: ${total_assets:,.2f}\\n"
 
         if 'liabilities' in context_data and context_data['liabilities']:
             liabilities = context_data['liabilities']
@@ -868,13 +903,13 @@ def generate_ai_prompt(user_query, context_data, conversation_history):
                     for liab in liabs:
                         if 'balance' in liab:
                             total_liabilities += liab['balance']
-            financial_summary += f"Total Liabilities: ${total_liabilities:,.2f}\n"
+            financial_summary += f"Total Liabilities: ${total_liabilities:,.2f}\\n"
 
         if 'transactions' in context_data and context_data['transactions']:
             transactions = context_data['transactions'].get('transactions', [])
             if transactions:
                 recent = transactions[:5]
-                financial_summary += f"Recent Transactions: {len(recent)} transactions\n"
+                financial_summary += f"Recent Transactions: {len(recent)} transactions\\n"
                 
                 # ADD ENHANCED ANALYTICS
                 try:
@@ -883,21 +918,21 @@ def generate_ai_prompt(user_query, context_data, conversation_history):
                     trends = analyze_spending_trends(transactions)
                     budget_recs = generate_budget_recommendations(transactions)
                     
-                    financial_summary += f"\nAdvanced Insights:\n"
+                    financial_summary += f"\\nAdvanced Insights:\\n"
                     if anomalies.get('total_anomalies', 0) > 0:
-                        financial_summary += f"- {anomalies['total_anomalies']} unusual spending transactions detected\n"
+                        financial_summary += f"- {anomalies['total_anomalies']} unusual spending transactions detected\\n"
                     
                     if 'category_analysis' in trends and trends['category_analysis']:
                         top_category = max(trends['category_analysis'].items(), key=lambda x: x[1]['total_spent'])[0]
-                        financial_summary += f"- Highest spending category: {top_category}\n"
+                        financial_summary += f"- Highest spending category: {top_category}\\n"
                     
                     if 'financial_health' in budget_recs:
-                        financial_summary += f"- Financial health status: {budget_recs['financial_health']}\n"
+                        financial_summary += f"- Financial health status: {budget_recs['financial_health']}\\n"
                     
                     if 'current_savings_rate' in budget_recs:
                         savings_rate = budget_recs['current_savings_rate'] * 100
-                        financial_summary += f"- Current savings rate: {savings_rate:.1f}%\n"
-                        
+                        financial_summary += f"- Current savings rate: {savings_rate:.1f}%\\n"
+                
                 except Exception as e:
                     logger.warning(f"Could not generate analytics insights: {e}")
 
@@ -905,13 +940,13 @@ def generate_ai_prompt(user_query, context_data, conversation_history):
             investments = context_data['investments']
             if 'portfolio' in investments:
                 portfolio = investments['portfolio']
-                financial_summary += f"Investment Portfolio Value: ${portfolio.get('total_value', 0):,.2f}\n"
-                financial_summary += f"Total Gain/Loss: ${portfolio.get('total_gain_loss', 0):,.2f} ({portfolio.get('total_gain_loss_percentage', 0):.1f}%)\n"
+                financial_summary += f"Investment Portfolio Value: ${portfolio.get('total_value', 0):,.2f}\\n"
+                financial_summary += f"Total Gain/Loss: ${portfolio.get('total_gain_loss', 0):,.2f} ({portfolio.get('total_gain_loss_percentage', 0):.1f}%)\\n"
 
         if 'credit_score' in context_data and context_data['credit_score']:
             credit_info = context_data['credit_score']
             if 'current_score' in credit_info:
-                financial_summary += f"Credit Score: {credit_info['current_score']} ({credit_info.get('score_range', 'Unknown')})\n"
+                financial_summary += f"Credit Score: {credit_info['current_score']} ({credit_info.get('score_range', 'Unknown')})\\n"
 
     prompt = f"""You are a professional financial advisor AI assistant. You have access to the user's financial data and can provide personalized financial advice, analysis, and insights.
 

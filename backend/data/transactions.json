@@ -1,8 +1,8 @@
 {
   "transactions": [
     {
-  "id": "txn_001",
-  "date": "2025-09-10",
+      "id": "txn_001",
+      "date": "2025-09-10",
       "description": "Grocery Store Purchase",
       "amount": -85.50,
       "category": "food",
@@ -10,8 +10,8 @@
       "type": "debit"
     },
     {
-  "id": "txn_002",
-  "date": "2025-09-09",
+      "id": "txn_002",
+      "date": "2025-09-09",
       "description": "Salary Deposit",
       "amount": 3500.00,
       "category": "income",
@@ -19,8 +19,8 @@
       "type": "credit"
     },
     {
-  "id": "txn_003",
-  "date": "2025-08-30",
+      "id": "txn_003",
+      "date": "2025-08-30",
       "description": "Gas Station",
       "amount": -45.20,
       "category": "transportation",
@@ -28,8 +28,26 @@
       "type": "debit"
     },
     {
-  "id": "txn_004",
-  "date": "2025-08-15",
+      "id": "txn_004",
+      "date": "2025-08-25",
+      "description": "Salary Deposit",
+      "amount": 3500.00,
+      "category": "income",
+      "account": "Primary Checking",
+      "type": "credit"
+    },
+    {
+      "id": "txn_005",
+      "date": "2025-08-20",
+      "description": "Restaurant Dinner",
+      "amount": -65.75,
+      "category": "food",
+      "account": "Primary Checking",
+      "type": "debit"
+    },
+    {
+      "id": "txn_006",
+      "date": "2025-08-15",
       "description": "Investment Contribution",
       "amount": -500.00,
       "category": "investment",
@@ -37,26 +55,8 @@
       "type": "debit"
     },
     {
-  "id": "txn_005",
-  "date": "2025-07-20",
-      "description": "Credit Card Payment",
-      "amount": -200.00,
-      "category": "debt_payment",
-      "account": "Primary Checking",
-      "type": "debit"
-    },
-    {
-  "id": "txn_006",
-  "date": "2025-07-01",
-      "description": "Restaurant",
-      "amount": -32.75,
-      "category": "food",
-      "account": "Primary Checking",
-      "type": "debit"
-    },
-    {
-  "id": "txn_007",
-  "date": "2025-06-15",
+      "id": "txn_007",
+      "date": "2025-08-10",
       "description": "Utility Bill",
       "amount": -120.00,
       "category": "utilities",
@@ -64,13 +64,31 @@
       "type": "debit"
     },
     {
-  "id": "txn_008",
-  "date": "2025-06-01",
-      "description": "Freelance Income",
-      "amount": 800.00,
+      "id": "txn_008",
+      "date": "2025-08-05",
+      "description": "Shopping - Clothes",
+      "amount": -150.00,
+      "category": "shopping",
+      "account": "Primary Checking",
+      "type": "debit"
+    },
+    {
+      "id": "txn_009",
+      "date": "2025-07-25",
+      "description": "Salary Deposit",
+      "amount": 3500.00,
       "category": "income",
       "account": "Primary Checking",
       "type": "credit"
+    },
+    {
+      "id": "txn_010",
+      "date": "2025-07-20",
+      "description": "Credit Card Payment",
+      "amount": -200.00,
+      "category": "debt_payment",
+      "account": "Primary Checking",
+      "type": "debit"
     }
   ]
 }

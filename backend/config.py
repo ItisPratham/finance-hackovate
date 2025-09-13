@@ -1,7 +1,8 @@
+# backend/config.py
+
 """
 Configuration settings for the AI Finance Assistant Backend
 """
-
 import os
 from dotenv import load_dotenv
 
