@@ -1,0 +1,50 @@
+{
+  "bank_accounts": [
+    {
+      "id": "acc_001",
+      "name": "Primary Checking",
+      "bank": "Chase Bank",
+      "balance": 2500.00,
+      "account_type": "checking",
+      "last_updated": "2024-01-15"
+    },
+    {
+      "id": "acc_002", 
+      "name": "High Yield Savings",
+      "bank": "Ally Bank",
+      "balance": 15000.00,
+      "account_type": "savings",
+      "last_updated": "2024-01-15"
+    }
+  ],
+  "investments": [
+    {
+      "id": "inv_001",
+      "name": "S&P 500 Index Fund",
+      "type": "mutual_fund",
+      "value": 8500.00,
+      "shares": 42.5,
+      "purchase_date": "2023-06-15",
+      "last_updated": "2024-01-15"
+    },
+    {
+      "id": "inv_002",
+      "name": "Apple Inc.",
+      "type": "stock",
+      "value": 3200.00,
+      "shares": 20,
+      "purchase_date": "2023-08-20",
+      "last_updated": "2024-01-15"
+    }
+  ],
+  "real_estate": [
+    {
+      "id": "re_001",
+      "address": "123 Main St, City, State",
+      "type": "primary_residence",
+      "estimated_value": 350000.00,
+      "purchase_date": "2020-03-15",
+      "last_updated": "2024-01-15"
+    }
+  ]
+}

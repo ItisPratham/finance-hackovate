@@ -1,0 +1,44 @@
+{
+  "portfolio": {
+    "total_value": 11700.00,
+    "total_invested": 10000.00,
+    "total_gain_loss": 1700.00,
+    "total_gain_loss_percentage": 17.0
+  },
+  "holdings": [
+    {
+      "id": "inv_001",
+      "name": "S&P 500 Index Fund",
+      "symbol": "SPY",
+      "type": "mutual_fund",
+      "shares": 42.5,
+      "current_price": 200.00,
+      "total_value": 8500.00,
+      "cost_basis": 7000.00,
+      "gain_loss": 1500.00,
+      "gain_loss_percentage": 21.43,
+      "allocation_percentage": 72.65
+    },
+    {
+      "id": "inv_002",
+      "name": "Apple Inc.",
+      "symbol": "AAPL",
+      "type": "stock",
+      "shares": 20,
+      "current_price": 160.00,
+      "total_value": 3200.00,
+      "cost_basis": 3000.00,
+      "gain_loss": 200.00,
+      "gain_loss_percentage": 6.67,
+      "allocation_percentage": 27.35
+    }
+  ],
+  "performance": {
+    "1_day": 0.5,
+    "1_week": 2.1,
+    "1_month": 5.8,
+    "3_months": 12.3,
+    "1_year": 17.0,
+    "ytd": 8.2
+  }
+}

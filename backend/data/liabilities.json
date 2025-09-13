@@ -1,0 +1,60 @@
+{
+  "credit_cards": [
+    {
+      "id": "cc_001",
+      "name": "Chase Freedom",
+      "balance": 1200.00,
+      "credit_limit": 5000.00,
+      "interest_rate": 18.99,
+      "minimum_payment": 35.00,
+      "due_date": "2024-02-15",
+      "last_updated": "2024-01-15"
+    },
+    {
+      "id": "cc_002",
+      "name": "Capital One Venture",
+      "balance": 800.00,
+      "credit_limit": 8000.00,
+      "interest_rate": 16.99,
+      "minimum_payment": 25.00,
+      "due_date": "2024-02-20",
+      "last_updated": "2024-01-15"
+    }
+  ],
+  "loans": [
+    {
+      "id": "loan_001",
+      "name": "Auto Loan",
+      "type": "auto",
+      "balance": 18500.00,
+      "original_amount": 25000.00,
+      "interest_rate": 4.5,
+      "monthly_payment": 450.00,
+      "remaining_payments": 36,
+      "last_updated": "2024-01-15"
+    },
+    {
+      "id": "loan_002",
+      "name": "Student Loan",
+      "type": "student",
+      "balance": 32000.00,
+      "original_amount": 40000.00,
+      "interest_rate": 3.2,
+      "monthly_payment": 380.00,
+      "remaining_payments": 84,
+      "last_updated": "2024-01-15"
+    }
+  ],
+  "mortgage": [
+    {
+      "id": "mort_001",
+      "address": "123 Main St, City, State",
+      "balance": 280000.00,
+      "original_amount": 350000.00,
+      "interest_rate": 3.8,
+      "monthly_payment": 1850.00,
+      "remaining_payments": 312,
+      "last_updated": "2024-01-15"
+    }
+  ]
+}

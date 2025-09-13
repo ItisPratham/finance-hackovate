@@ -1,0 +1,34 @@
+{
+  "current_score": 750,
+  "score_range": "Good",
+  "last_updated": "2024-01-15",
+  "factors": {
+    "payment_history": "Excellent",
+    "credit_utilization": "Good",
+    "length_of_credit_history": "Fair",
+    "new_credit": "Good",
+    "credit_mix": "Good"
+  },
+  "history": [
+    {
+      "date": "2024-01-15",
+      "score": 750,
+      "change": 5
+    },
+    {
+      "date": "2023-12-15",
+      "score": 745,
+      "change": -2
+    },
+    {
+      "date": "2023-11-15",
+      "score": 747,
+      "change": 3
+    }
+  ],
+  "recommendations": [
+    "Keep credit utilization below 30%",
+    "Continue making payments on time",
+    "Consider diversifying credit mix"
+  ]
+}

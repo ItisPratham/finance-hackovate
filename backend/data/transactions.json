@@ -1,0 +1,76 @@
+{
+  "transactions": [
+    {
+  "id": "txn_001",
+  "date": "2025-09-10",
+      "description": "Grocery Store Purchase",
+      "amount": -85.50,
+      "category": "food",
+      "account": "Primary Checking",
+      "type": "debit"
+    },
+    {
+  "id": "txn_002",
+  "date": "2025-09-09",
+      "description": "Salary Deposit",
+      "amount": 3500.00,
+      "category": "income",
+      "account": "Primary Checking",
+      "type": "credit"
+    },
+    {
+  "id": "txn_003",
+  "date": "2025-08-30",
+      "description": "Gas Station",
+      "amount": -45.20,
+      "category": "transportation",
+      "account": "Primary Checking",
+      "type": "debit"
+    },
+    {
+  "id": "txn_004",
+  "date": "2025-08-15",
+      "description": "Investment Contribution",
+      "amount": -500.00,
+      "category": "investment",
+      "account": "High Yield Savings",
+      "type": "debit"
+    },
+    {
+  "id": "txn_005",
+  "date": "2025-07-20",
+      "description": "Credit Card Payment",
+      "amount": -200.00,
+      "category": "debt_payment",
+      "account": "Primary Checking",
+      "type": "debit"
+    },
+    {
+  "id": "txn_006",
+  "date": "2025-07-01",
+      "description": "Restaurant",
+      "amount": -32.75,
+      "category": "food",
+      "account": "Primary Checking",
+      "type": "debit"
+    },
+    {
+  "id": "txn_007",
+  "date": "2025-06-15",
+      "description": "Utility Bill",
+      "amount": -120.00,
+      "category": "utilities",
+      "account": "Primary Checking",
+      "type": "debit"
+    },
+    {
+  "id": "txn_008",
+  "date": "2025-06-01",
+      "description": "Freelance Income",
+      "amount": 800.00,
+      "category": "income",
+      "account": "Primary Checking",
+      "type": "credit"
+    }
+  ]
+}

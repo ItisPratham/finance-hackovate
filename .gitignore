@@ -1,0 +1,78 @@
+# =====================================
+# Node.js / React project ignores
+# =====================================
+
+# Dependencies
+/node_modules/
+.pnp/
+.pnp.js
+
+# Build output
+/build/
+dist/
+
+# Coverage results
+/coverage/
+
+# Environment variables
+.env
+.env.*.local
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor directories and system files
+.DS_Store
+Thumbs.db
+
+# Optional: lockfiles (keep one, ignore others if needed)
+/package-lock.json
+# /yarn.lock
+# /pnpm-lock.yaml
+
+# =====================================
+# IDEs & tooling
+# =====================================
+
+# VS Code
+.vscode/
+.history/
+
+# JetBrains (WebStorm, IntelliJ, etc.)
+.idea/
+
+# Mac system files
+*.swp
+
+# =====================================
+# Misc
+# =====================================
+
+# Optional: Linting/formatting cache
+.eslintcache
+.prettiercache
+
+# Optional: Storybook static build
+/storybook-static/
+
+# Optional: local testing/staging servers
+*.local
+
+# Optional: Firebase CLI files
+.firebaserc
+
+# Optional: npm package distribution
+.npm/
+
+# Python (if your project has some tooling/scripts)
+/.venv/
+__pycache__/
+*.py[cod]
+
+# Optional: Next.js specific (if mixed with SSR)
+/.next/
+
+frontend/node_modules/
