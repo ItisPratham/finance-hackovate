@@ -43,7 +43,7 @@ CORS(app, origins=[
 api = Api(app, version='1.0', title='AI Finance Assistant API',
           description='API documentation for AI Finance Assistant backend', doc='/docs')
 
-# Configure Gemini AI
+# Configure Gemini AI - FIXED VERSION
 GEMINI_API_KEY = os.environ.get('GEMINI_API_KEY')
 model = None
 if GEMINI_API_KEY:
@@ -440,8 +440,13 @@ def add_to_conversation_context(user_query, ai_response):
     # Keep only last 10 items
     session['conversation_history'] = session['conversation_history'][-10:]
 
-def filter_data_by_permissions(data_type):
-    perms = session.get('permissions', default_permissions)
+def filter_data_by_permissions(data_type, permissions=None):
+    # Use provided permissions or fall back to session permissions or default
+    if permissions is None:
+        perms = session.get('permissions', default_permissions)
+    else:
+        perms = permissions
+    
     if perms.get(data_type, False):
         return financial_data.get(data_type, {})
     else:
@@ -514,13 +519,15 @@ permission_model = perm_ns.model('Permissions', {
     "investments": fields.Boolean(required=True, description="Access to investments data")
 })
 
+# Query model with optional permissions
 query_model = query_ns.model('Query', {
-    "query": fields.String(required=True, description="User's natural language query")
+    "query": fields.String(required=True, description="User's natural language query"),
+    "permissions": fields.Nested(permission_model, required=False, description="User permissions for data access")
 })
 
 financial_summary_model = data_ns.model('FinancialSummary', {
     'net_worth': fields.Raw(description='Net worth summary'),
-    'spending': fields.Raw(description='Spending summary'),
+    'spending': fields.Raw(description='Spending summary'),  
     'investments': fields.Raw(description='Investment portfolio summary'),
     'monthlyIncome': fields.Float(description='Total income in last month'),
     'monthlyExpenses': fields.Float(description='Total expenses in last month'),
@@ -529,7 +536,6 @@ financial_summary_model = data_ns.model('FinancialSummary', {
 })
 
 permissions_parser = reqparse.RequestParser()
-# No params since permissions stored in session
 
 data_type_parser = reqparse.RequestParser()
 data_type_parser.add_argument('data_type', location='view_args', required=True, help='Type of financial data')
@@ -608,8 +614,7 @@ class FinancialSummary(Resource):
         if investments and 'portfolio' in investments:
             summary['investments'] = investments['portfolio']
         
-        # --- NEW: Frontend Metrics ---
-        # Get transactions for the past month
+        # Frontend Metrics
         all_txns = transactions_data.get('transactions', []) if transactions_data else []
         one_month_ago = datetime.now() - timedelta(days=30)
         recent_txns = []
@@ -621,16 +626,13 @@ class FinancialSummary(Resource):
             except ValueError:
                 continue
         
-        # Calculate monthly metrics
         monthly_income = sum(t['amount'] for t in recent_txns if t['amount'] > 0)
         monthly_expenses = sum(abs(t['amount']) for t in recent_txns if t['amount'] < 0)
         savings_rate = ((monthly_income - monthly_expenses) / monthly_income * 100) if monthly_income > 0 else 0.0
         
-        # Get credit score
         credit_data = filter_data_by_permissions('credit_score')
         credit_score = credit_data.get('current_score') if credit_data else None
         
-        # Add frontend metrics to summary
         summary.update({
             'monthlyIncome': monthly_income,
             'monthlyExpenses': monthly_expenses,
@@ -711,7 +713,7 @@ class ComprehensiveAnalytics(Resource):
             "summary": calculate_spending_summary(transactions)
         }
 
-# Query AI Resource
+# FIXED: Query AI Resource with proper AI availability check
 @query_ns.route('')
 class AIQuery(Resource):
     @query_ns.expect(query_model)
@@ -724,10 +726,25 @@ class AIQuery(Resource):
         if not user_query:
             return {"error": "Query cannot be empty"}, 400
         
-        conversation_history = get_conversation_context()
-        perms = session.get('permissions', default_permissions)
-        context_data = {k: financial_data[k] for k, v in perms.items() if v and k in financial_data}
+        # Handle permissions from the request or use session/default
+        request_permissions = data.get('permissions')
+        if request_permissions:
+            session['permissions'] = request_permissions
+            permissions_to_use = request_permissions
+            logger.info("Using permissions from request and updating session")
+        else:
+            permissions_to_use = session.get('permissions', default_permissions)
+            logger.info("Using permissions from session/default")
         
+        conversation_history = get_conversation_context()
+        
+        # Build context data using the permissions
+        context_data = {}
+        for data_type in ['assets', 'liabilities', 'transactions', 'epf', 'credit_score', 'investments']:
+            if permissions_to_use.get(data_type, False):
+                context_data[data_type] = financial_data.get(data_type, {})
+        
+        # FIXED: Proper AI availability check
         if model is None:
             return {"error": "AI service not available. Please check GEMINI_API_KEY configuration and available models."}, 503
         
@@ -743,11 +760,9 @@ class AIQuery(Resource):
             
             try:
                 ai_response = make_ai_request_with_retry(prompt)
-                # Cache the successful response
                 cache_response(cache_key, ai_response)
             except Exception as e:
                 logger.error(f"Gemini API error: {e}")
-                # Provide more specific error messages based on the error type
                 if "404" in str(e) and "not found" in str(e):
                     ai_response = f"AI model configuration error: The selected model is not available. Please check your API configuration."
                 elif "403" in str(e):
@@ -763,7 +778,8 @@ class AIQuery(Resource):
         return {
             "response": ai_response,
             "timestamp": datetime.now().isoformat(),
-            "context_used": list(context_data.keys())
+            "context_used": list(context_data.keys()),
+            "permissions_used": permissions_to_use
         }
 
 # Session Management Resource
@@ -839,7 +855,7 @@ class CacheStatus(Resource):
         return {
             "cache_size": len(response_cache),
             "cache_duration_minutes": CACHE_DURATION // 60,
-            "cached_queries": list(response_cache.keys())[:10]  # Show first 10 for debugging
+            "cached_queries": list(response_cache.keys())[:10]
         }
 
 # Health Check Resource
@@ -850,7 +866,6 @@ class HealthCheck(Resource):
             model_info = "unavailable"
             if model:
                 try:
-                    # Get the model name from the model object
                     model_name = getattr(model, '_model_name', 'unknown')
                     model_info = f"available ({model_name})"
                 except:
@@ -913,7 +928,6 @@ def generate_ai_prompt(user_query, context_data, conversation_history):
                 
                 # ADD ENHANCED ANALYTICS
                 try:
-                    # Add analytics insights
                     anomalies = detect_spending_anomalies(transactions)
                     trends = analyze_spending_trends(transactions)
                     budget_recs = generate_budget_recommendations(transactions)
