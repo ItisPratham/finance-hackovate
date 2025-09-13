@@ -111,7 +111,7 @@ export function Settings() {
               </div>
               <Switch
                 checked={privacy.dataSharing}
-                onCheckedChange={(checked) => setPrivacy(prev => ({ ...prev, dataSharing: checked }))}
+                onCheckedChange={(checked: any) => setPrivacy(prev => ({ ...prev, dataSharing: checked }))}
               />
             </div>
 
@@ -122,7 +122,7 @@ export function Settings() {
               </div>
               <Switch
                 checked={privacy.analytics}
-                onCheckedChange={(checked) => setPrivacy(prev => ({ ...prev, analytics: checked }))}
+                onCheckedChange={(checked : any) => setPrivacy(prev => ({ ...prev, analytics: checked }))}
               />
             </div>
 
@@ -133,7 +133,7 @@ export function Settings() {
               </div>
               <Switch
                 checked={privacy.marketing}
-                onCheckedChange={(checked) => setPrivacy(prev => ({ ...prev, marketing: checked }))}
+                onCheckedChange={(checked: any) => setPrivacy(prev => ({ ...prev, marketing: checked }))}
               />
             </div>
           </div>
@@ -167,7 +167,7 @@ export function Settings() {
             </div>
             <Switch
               checked={notifications.spendingAlerts}
-              onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, spendingAlerts: checked }))}
+              onCheckedChange={(checked : any) => setNotifications(prev => ({ ...prev, spendingAlerts: checked }))}
             />
           </div>
 
@@ -178,7 +178,7 @@ export function Settings() {
             </div>
             <Switch
               checked={notifications.goalUpdates}
-              onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, goalUpdates: checked }))}
+              onCheckedChange={(checked : any) => setNotifications(prev => ({ ...prev, goalUpdates: checked }))}
             />
           </div>
 
@@ -189,7 +189,7 @@ export function Settings() {
             </div>
             <Switch
               checked={notifications.weeklyReports}
-              onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, weeklyReports: checked }))}
+              onCheckedChange={(checked : any) => setNotifications(prev => ({ ...prev, weeklyReports: checked }))}
             />
           </div>
 
@@ -200,7 +200,7 @@ export function Settings() {
             </div>
             <Switch
               checked={notifications.securityAlerts}
-              onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, securityAlerts: checked }))}
+              onCheckedChange={(checked : any) => setNotifications(prev => ({ ...prev, securityAlerts: checked }))}
             />
           </div>
 
@@ -211,7 +211,7 @@ export function Settings() {
             </div>
             <Switch
               checked={notifications.marketUpdates}
-              onCheckedChange={(checked) => setNotifications(prev => ({ ...prev, marketUpdates: checked }))}
+              onCheckedChange={(checked : any) => setNotifications(prev => ({ ...prev, marketUpdates: checked }))}
             />
           </div>
 
