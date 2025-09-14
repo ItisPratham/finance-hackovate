@@ -44,7 +44,12 @@ export function Dashboard() {
   categoryBreakdown: null
 });
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/data/summary")
+    const userId = localStorage.getItem("user_id") || "1";
+    axios.get("http://127.0.0.1:5000/data/summary", {
+      headers: {
+        "X-User-ID": userId
+      }
+    })
       .then(res => {
         const d = res.data;
         const totalIncome = d.spending?.total_income ?? null;
@@ -63,7 +68,7 @@ export function Dashboard() {
           creditScore: null, // not provided by API
           investments: d.investments?.total_value ?? null,
           cash: null, // not provided by API
-          loans: null ,// not provided by API
+          loans: null, // not provided by API
           categoryBreakdown: d.spending?.category_breakdown ?? null
         });
       })

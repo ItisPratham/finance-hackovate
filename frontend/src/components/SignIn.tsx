@@ -6,7 +6,7 @@ import { Label } from "./ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
 import { toast } from "sonner@2.0.3";
-
+import axios from "axios";
 interface SignInProps {
   onBack: () => void;
   onSwitchToSignUp: () => void;
@@ -49,7 +49,26 @@ export function SignIn({ onBack, onSwitchToSignUp }: SignInProps) {
     
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 1500));
-    
+    try {
+      // Hash the password before sending
+      // const bcrypt = await import('bcryptjs');
+      // const hashedPassword = bcrypt.hashSync(password, 10);
+      const response = await axios.post("http://127.0.0.1:5000/auth/login", { email, password });
+      // If the API returns an error status, handle it
+      if (response.status !== 200) {
+      toast.error(response.data?.message || "Login failed. Please try again.");
+      setIsLoading(false);
+      return;
+      }
+      localStorage.setItem("user_id", response.data.user_id);
+      window.location.href = "/dashboard"; // Redirect to dashboard on successful login
+    } catch (error: any) {
+      toast.error(
+      error.response?.data?.message || "Network error. Please try again."
+      );
+      setIsLoading(false);
+      return;
+    }
     // For demo purposes, always show success
     toast.success("Welcome back! Your financial dashboard is ready.");
     setIsLoading(false);

@@ -127,9 +127,15 @@ if (!permissions || typeof permissions !== 'object') {
   localStorage.setItem('permissions', JSON.stringify(defaultPermissions));
   permissions = defaultPermissions;
 }
+const userId = localStorage.getItem("user_id") || "1";
     const response = await axios.post('http://127.0.0.1:5000/query', {
       query: input,
       permissions
+    }, {
+      headers: {
+      'Content-Type': 'application/json',
+      "X-User-ID": userId
+      }
     });
 
     const aiMessage: Message = {
